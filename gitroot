@@ -1,0 +1,25 @@
+#!/bin/bash
+# Created by Jeroen Boersma
+
+# Git root
+gitroot () {
+
+        # Find gitroot directory
+        local grd="${PWD}";while ! [ -d "${grd}/.git" ] && [ "${grd}" != "/" ];do grd=`readlink -f "${grd}/../"`;done
+        if [ "${grd}" = "/" ];then grd=''; fi;
+
+        # Echo git root
+        gitroot_gr() {
+                [ -z "${grd}" ] && return 1 || echo -n ${grd} && return 0;
+        }
+        # Change to gitdirectory
+        gitroot_gd() { [ -z "${grd}" ] && return 1 || cd ${grd} && return 0; }
+
+        # Execute script
+        gitroot_$1;
+}
+
+# If posible, add shorthand scripts
+if [ -z"`type 'gr' 2>/dev/null`" ]; then gr() { gitroot gr; }; fi
+if [ -z"`type 'gd' 2>/dev/null`" ]; then gd() { gitroot gd; }; fi
+
